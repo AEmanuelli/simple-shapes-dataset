@@ -180,18 +180,17 @@ class SimpleShapesPretrainedVisual(DataDomain):
 
 class Attribute(NamedTuple):
     """
-    NamedTuple for the attributes of the SimpleShapesDataset.
-    NamedTuples are used as they are correcly handled by pytorch's collate function.
+    Merged NamedTuple for the attributes of the SimpleShapesDataset.
+    The color fields are optional and can be set to None if unavailable.
     """
-
-    category: torch.Tensor
-    x: torch.Tensor
-    y: torch.Tensor
-    size: torch.Tensor
-    rotation: torch.Tensor
-    color_r: torch.Tensor
-    color_g: torch.Tensor
-    color_b: torch.Tensor
+    category: torch.Tensor | int
+    x: torch.Tensor | float
+    y: torch.Tensor | float
+    size: torch.Tensor | float
+    rotation: torch.Tensor | float
+    color_r: torch.Tensor | float | None = None
+    color_g: torch.Tensor | float | None = None
+    color_b: torch.Tensor | float | None = None
     unpaired: torch.Tensor | None
 
 
@@ -243,15 +242,21 @@ class SimpleShapesAttributes(DataDomain):
         """
         label = self.labels[index]
         unpaired = self.unpaired[index] if self.unpaired is not None else None
+
+        # Check if color values are provided
+        color_r = label[5] / 255 if len(label) > 5 else None
+        color_g = label[6] / 255 if len(label) > 6 else None
+        color_b = label[7] / 255 if len(label) > 7 else None
+
         item = Attribute(
             category=label[0].long(),
             x=label[1],
             y=label[2],
             size=label[3],
             rotation=label[4],
-            color_r=label[5] / 255,
-            color_g=label[6] / 255,
-            color_b=label[7] / 255,
+            color_r=color_r,
+            color_g=color_g,
+            color_b=color_b,
             unpaired=unpaired,
         )
 
