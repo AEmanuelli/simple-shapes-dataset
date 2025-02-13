@@ -1,3 +1,4 @@
+
 from collections.abc import Sequence
 
 import torch
@@ -29,9 +30,9 @@ class NormalizeAttributes:
             y=((attr.y - self.min_position) / self.scale_position) * 2 - 1,
             size=((attr.size - self.min_size) / self.scale_size) * 2 - 1,
             rotation=attr.rotation,
-            color_r=(attr.color_r) * 2 - 1,
-            color_g=(attr.color_g) * 2 - 1,
-            color_b=(attr.color_b) * 2 - 1,
+            # color_r=(attr.color_r) * 2 - 1,
+            # color_g=(attr.color_g) * 2 - 1,
+            # color_b=(attr.color_b) * 2 - 1,
             unpaired=attr.unpaired,
         )
 
@@ -58,9 +59,9 @@ class UnnormalizeAttributes:
             y=to_unit_range(attr.y) * self.scale_position + self.min_position,
             size=to_unit_range(attr.size) * self.scale_size + self.min_size,
             rotation=attr.rotation,
-            color_r=to_unit_range(attr.color_r) * 255,
-            color_g=to_unit_range(attr.color_g) * 255,
-            color_b=to_unit_range(attr.color_b) * 255,
+            # color_r=to_unit_range(attr.color_r) * 255,
+            # color_g=to_unit_range(attr.color_g) * 255,
+            # color_b=to_unit_range(attr.color_b) * 255,
             unpaired=attr.unpaired,
         )
 
@@ -75,9 +76,9 @@ def attribute_to_tensor(attr: Attribute) -> list[torch.Tensor]:
                 attr.size.unsqueeze(0),
                 attr.rotation.cos().unsqueeze(0),
                 attr.rotation.sin().unsqueeze(0),
-                attr.color_r.unsqueeze(0),
-                attr.color_g.unsqueeze(0),
-                attr.color_b.unsqueeze(0),
+                # attr.color_r.unsqueeze(0),
+                # attr.color_g.unsqueeze(0),
+                # attr.color_b.unsqueeze(0),
             ]
         ),
     ]
@@ -116,9 +117,9 @@ def tensor_to_attribute(tensor: Sequence[torch.Tensor]) -> Attribute:
         y=attributes[:, 1],
         size=attributes[:, 2],
         rotation=constrained_rotation,
-        color_r=attributes[:, 5],
-        color_g=attributes[:, 6],
-        color_b=attributes[:, 7],
+        # color_r=attributes[:, 5],
+        # color_g=attributes[:, 6],
+        # color_b=attributes[:, 7],
         unpaired=unpaired,
     )
 
@@ -163,11 +164,11 @@ def attr_to_str(
             {
                 "shape": attr.category[k].detach().cpu().item(),
                 "rotation": attr.rotation[k].detach().cpu().item(),
-                "color": (
-                    attr.color_r[k].detach().cpu().item(),
-                    attr.color_g[k].detach().cpu().item(),
-                    attr.color_b[k].detach().cpu().item(),
-                ),
+                # "color": (
+                #     attr.color_r[k].detach().cpu().item(),
+                #     attr.color_g[k].detach().cpu().item(),
+                #     attr.color_b[k].detach().cpu().item(),
+                # ),
                 "size": attr.size[k].detach().cpu().item(),
                 "location": (
                     attr.x[k].detach().cpu().item(),
