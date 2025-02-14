@@ -191,7 +191,7 @@ class Attribute(NamedTuple):
     color_r: torch.Tensor | float | None = None
     color_g: torch.Tensor | float | None = None
     color_b: torch.Tensor | float | None = None
-    unpaired: torch.Tensor | None
+    unpaired: torch.Tensor | None = None
 
 
 class AttributesAdditionalArgs(TypedDict):
