@@ -188,10 +188,11 @@ class Attribute(NamedTuple):
     y: torch.Tensor | float
     size: torch.Tensor | float
     rotation: torch.Tensor | float
+    unpaired: torch.Tensor | None
     color_r: torch.Tensor | float | None = None
     color_g: torch.Tensor | float | None = None
     color_b: torch.Tensor | float | None = None
-    unpaired: torch.Tensor | None = None
+    
 
 
 class AttributesAdditionalArgs(TypedDict):
