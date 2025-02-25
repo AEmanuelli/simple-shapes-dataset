@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from simple_shapes_dataset.cli.migration import migrate_dataset
 
-DATASET_URL = "https://drive.usercontent.google.com/download?id=1wY-gAylhN7SZZuGxqF4xuy6Desed-yLC&export=download&authuser=1&confirm=t&uuid=57052c53-5f2b-46eb-b73b-47615a17a8c5&at=AEz70l5e0QfvqbYtEJpLfq_FTKeP:1740500176814"
+DATASET_URL = "https://drive.usercontent.google.com/download?id=1wY-gAylhN7SZZuGxqF4xuy6Desed-yLC&export=download&authuser=1&confirm=t&uuid=f04e15a1-02da-4225-8cf0-6fc72669617b&at=AEz70l7mDmHkyI7DaoWXQlkVE-kI:1740501530339"
 
 
 def downlad_file(url: str, path: Path):
