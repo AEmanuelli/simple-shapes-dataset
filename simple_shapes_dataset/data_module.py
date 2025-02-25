@@ -38,13 +38,12 @@ class SimpleShapesDataModule(LightningDataModule):
         seed: int | None = None,
         ood_seed: int | None = None,
         domain_args: Mapping[str, Any] | None = None,
-        additional_transforms: (
-            Mapping[str, Sequence[Callable[[Any], Any]]] | None
-        ) = None,
-        train_transforms: (Mapping[str, Sequence[Callable[[Any], Any]]] | None) = None,
-        val_transforms: (Mapping[str, Sequence[Callable[[Any], Any]]] | None) = None,
+        additional_transforms: Mapping[str, Sequence[Callable[[Any], Any]]] | None = None,
+        train_transforms: Mapping[str, Sequence[Callable[[Any], Any]]] | None = None,
+        val_transforms: Mapping[str, Sequence[Callable[[Any], Any]]] | None = None,
         collate_fn: Callable[[list[Any]], Any] | None = None,
         use_default_transforms: bool = True,
+        use_color_attributes: bool = True,  # Nouveau paramètre pour contrôler le chargement des attributs de couleur
     ) -> None:
         super().__init__()
 
@@ -70,6 +69,7 @@ class SimpleShapesDataModule(LightningDataModule):
         self._train_transform = train_transforms or {}
         self._val_transform = val_transforms or {}
         self._use_default_transforms = use_default_transforms
+        self.use_color_attributes = use_color_attributes  # Sauvegarde du paramètre
 
         self.max_train_size = max_train_size
         self.batch_size = batch_size
@@ -91,13 +91,20 @@ class SimpleShapesDataModule(LightningDataModule):
         transforms: dict[str, Callable[[Any], Any]] = {}
         for domain in domains:
             domain_transforms: list[Callable[[Any], Any]] = []
+            # Ajout des transformations par défaut pour les attributs si l'on souhaite charger la couleur
             if domain == "attr" and self._use_default_transforms:
-                domain_transforms.extend(
-                    [
+                if self.use_color_attributes:
+                    # Transformations avec couleur
+                    domain_transforms.extend([
                         NormalizeAttributes(image_size=32),
                         attribute_to_tensor,
-                    ]
-                )
+                    ])
+                else:
+                    # Transformations sans couleur 
+                    domain_transforms.extend([
+                        NormalizeAttributesNoColor(image_size=32),  # Utiliser une version sans couleur
+                        attribute_to_tensor_no_color,  # Utiliser une version sans couleur
+                    ])
 
             if domain == "v" and self._use_default_transforms:
                 domain_transforms.append(ToTensor())
@@ -222,7 +229,7 @@ class SimpleShapesDataModule(LightningDataModule):
             assert ood_datasets is not None
             datasets = ood_datasets
 
-        collate_fn = self._collate_fn or default_collate
+        collate_fn =  default_collate #self._collate_fn or
 
         return {
             domain: collate_fn([dataset[k] for k in range(amount)])

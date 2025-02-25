@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Generic, NamedTuple, TypedDict, TypeVar, Optional
+from typing import Any, Generic, NamedTuple, TypedDict, TypeVar
 
 import numpy as np
 import torch
@@ -178,18 +178,21 @@ class SimpleShapesPretrainedVisual(DataDomain):
         return x
 
 
-@dataclass
-class Attribute:
-    category: torch.Tensor | int
-    x: torch.Tensor | float
-    y: torch.Tensor | float
-    size: torch.Tensor | float
-    rotation: torch.Tensor | float
-    color_r: Optional[torch.Tensor | float] = field(default=None, init=False)
-    color_g: Optional[torch.Tensor | float] = field(default=None, init=False)
-    color_b: Optional[torch.Tensor | float] = field(default=None, init=False)
-    unpaired: Optional[torch.Tensor] = field(default=None) #Always provide default value
+class Attribute(NamedTuple):
+    """
+    NamedTuple for the attributes of the SimpleShapesDataset.
+    NamedTuples are used as they are correcly handled by pytorch's collate function.
+    """
 
+    category: torch.Tensor
+    x: torch.Tensor
+    y: torch.Tensor
+    size: torch.Tensor
+    rotation: torch.Tensor
+    color_r: torch.Tensor
+    color_g: torch.Tensor
+    color_b: torch.Tensor
+    unpaired: torch.Tensor | None
 
 
 class AttributesAdditionalArgs(TypedDict):
@@ -240,26 +243,17 @@ class SimpleShapesAttributes(DataDomain):
         """
         label = self.labels[index]
         unpaired = self.unpaired[index] if self.unpaired is not None else None
-        
-        # Create a dictionary with the base attributes
-        attr_dict = {
-            "category": label[0].long(),
-            "x": label[1],
-            "y": label[2],
-            "size": label[3],
-            "rotation": label[4],
-            "unpaired" : unpaired
-        }
-
-        # Conditionally add color attributes
-        if len(label) > 5:
-            attr_dict["color_r"] = label[5] / 255
-        if len(label) > 6:
-            attr_dict["color_g"] = label[6] / 255
-        if len(label) > 7:
-            attr_dict["color_b"] = label[7] / 255
-            
-        item = Attribute(**attr_dict)
+        item = Attribute(
+            category=label[0].long(),
+            x=label[1],
+            y=label[2],
+            size=label[3],
+            rotation=label[4],
+            color_r=label[5] / 255,
+            color_g=label[6] / 255,
+            color_b=label[7] / 255,
+            unpaired=unpaired,
+        )
 
         if self.transform is not None:
             return self.transform(item)
