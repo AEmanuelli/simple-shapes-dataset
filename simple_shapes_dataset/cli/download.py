@@ -9,7 +9,7 @@ from tqdm import tqdm
 from simple_shapes_dataset.cli.migration import migrate_dataset
 
 DATASET_URL = "https://drive.usercontent.google.com/download?id=1Uu34VcOzX3y90Jc3zA9Mk8lVgSF1gpwd&export=download&authuser=1&confirm=t&uuid=eacbe163-06e1-4b97-be4d-3391f5604299&at=AEz70l7d-cwosYNX2qDdhTG37BTI:1740684841009"
-
+DATASET_URL = "https://drive.usercontent.google.com/download?id=1Uu34VcOzX3y90Jc3zA9Mk8lVgSF1gpwd&export=download&authuser=1&confirm=t&uuid=21a4e849-0996-4656-b5b6-a3711eef222f&at=AEz70l6dsVL92DH-D28o9feVeCNs%3A1740685337211"
 
 def downlad_file(url: str, path: Path):
     with (
