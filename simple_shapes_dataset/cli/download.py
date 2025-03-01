@@ -9,9 +9,9 @@ from tqdm import tqdm
 from simple_shapes_dataset.cli.migration import migrate_dataset
 
 # DATASET_URL = "https://zenodo.org/records/8112838/files/simple_shapes_dataset.tar.gz"
-DATASET_URL = "https://drive.usercontent.google.com/download?id=1gZt7xg2ZqUwo1kKZPghVz3DxY8Rm0epT&export=download&authuser=1&confirm=t&uuid=a6900eb0-76af-499a-bef0-b5906145e2bd&at=AEz70l5mWvxvYf-tvzzWb2S6zAiA:1740754052715"
+DATASET_URL = "https://drive.usercontent.google.com/download?id=1gZt7xg2ZqUwo1kKZPghVz3DxY8Rm0epT&export=download&authuser=1&confirm=t&uuid=b748272e-5362-44bb-a8e8-0991426eb185&at=AEz70l4BoHSbKwhVGJgu8hGIiVxv:1740761553787"
 
-def downlad_file(url: str, path: Path):
+def download_file(url: str, path: Path):
     with (
         requests.get(url, stream=True) as response,
         open(path, "wb") as handle,
