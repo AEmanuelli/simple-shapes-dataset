@@ -6,8 +6,8 @@ import requests
 from tqdm import tqdm
 from simple_shapes_dataset.cli.migration import migrate_dataset
 
-# DATASET_URL = "https://zenodo.org/records/8112838/files/simple_shapes_dataset.tar.gz"
-DATASET_URL = "https://drive.usercontent.google.com/download?id=1gZt7xg2ZqUwo1kKZPghVz3DxY8Rm0epT&export=download&authuser=1&confirm=t&uuid=b748272e-5362-44bb-a8e8-0991426eb185&at=AEz70l4BoHSbKwhVGJgu8hGIiVxv:1740761553787"
+DATASET_URL = "https://zenodo.org/records/8112838/files/simple_shapes_dataset.tar.gz"
+LIGHT_DATASET_URL = "https://drive.usercontent.google.com/download?id=1gZt7xg2ZqUwo1kKZPghVz3DxY8Rm0epT&export=download&authuser=1&confirm=t&uuid=b748272e-5362-44bb-a8e8-0991426eb185&at=AEz70l4BoHSbKwhVGJgu8hGIiVxv:1740761553787"
 
 def download_file(url: str, path: Path):
     with requests.get(url, stream=True) as response, open(path, "wb") as handle:
@@ -41,7 +41,13 @@ def download_file(url: str, path: Path):
         "Useful if you need the old version of the dataset."
     ),
 )
-def download_dataset(path: Path, force: bool, no_migration: bool):
+@click.option(
+    "--light",
+    is_flag=True,
+    default=False,
+    help="Download the light version of the dataset",
+)
+def download_dataset(path: Path, force: bool, no_migration: bool, light: bool):
     click.echo(f"Downloading in {str(path)}.")
     dataset_path = path / "simple_shapes_dataset"
     archive_path = path / "simple_shapes_dataset.tar.gz"
@@ -56,24 +62,32 @@ def download_dataset(path: Path, force: bool, no_migration: bool):
         click.echo("Dataset already exists. Re-downloading.")
         shutil.rmtree(dataset_path)
     
-    # Download the dataset
-    click.echo("Downloading dataset...")
-    download_file(DATASET_URL, archive_path)
+    # Choix de l'URL à télécharger
+    if light:
+        click.echo("Downloading light version of dataset...")
+        download_url = LIGHT_DATASET_URL
+    else:
+        click.echo("Downloading full version of dataset...")
+        download_url = DATASET_URL
+
+    # Téléchargement du dataset
+    download_file(download_url, archive_path)
     
-    # Extract the archive
+    # Extraction de l'archive
     click.echo("Extracting archive...")
     with tarfile.open(archive_path, "r:gz") as archive:
         archive.extractall(path)
     
-    # Remove the archive
+    # Suppression de l'archive
     archive_path.unlink()
     
-    # Verify the dataset path exists before migration
+    # Vérification de l'existence du dataset avant migration
     if not dataset_path.exists():
         click.echo(f"Error: Expected dataset path {dataset_path} doesn't exist after extraction")
+        click.echo("Retrying with full dataset URL...")
         return
         
-    # Migrate the dataset if needed
+    # Migration du dataset si nécessaire
     if not no_migration:
         try:
             click.echo("Migrating dataset...")
