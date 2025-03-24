@@ -7,7 +7,7 @@ from tqdm import tqdm
 from simple_shapes_dataset.cli.migration import migrate_dataset
 
 DATASET_URL = "https://zenodo.org/records/8112838/files/simple_shapes_dataset.tar.gz"
-LIGHT_DATASET_URL = "https://drive.usercontent.google.com/download?id=1gZt7xg2ZqUwo1kKZPghVz3DxY8Rm0epT&export=download&authuser=1&confirm=t&uuid=b748272e-5362-44bb-a8e8-0991426eb185&at=AEz70l4BoHSbKwhVGJgu8hGIiVxv:1740761553787"
+# LIGHT_DATASET_URL = "https://drive.usercontent.google.com/download?id=1gZt7xg2ZqUwo1kKZPghVz3DxY8Rm0epT&export=download&authuser=1&confirm=t&uuid=b748272e-5362-44bb-a8e8-0991426eb185&at=AEz70l4BoHSbKwhVGJgu8hGIiVxv:1740761553787"
 
 def download_file(url: str, path: Path):
     with requests.get(url, stream=True) as response, open(path, "wb") as handle:
@@ -47,7 +47,7 @@ def download_file(url: str, path: Path):
     default=False,
     help="Download the light version of the dataset",
 )
-def download_dataset(path: Path, force: bool, no_migration: bool, light: bool):
+def download_dataset(path: Path, force: bool, no_migration: bool, light: bool = False):
     click.echo(f"Downloading in {str(path)}.")
     dataset_path = path / "simple_shapes_dataset"
     archive_path = path / "simple_shapes_dataset.tar.gz"
