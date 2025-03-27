@@ -71,7 +71,7 @@ def download_dataset(path: Path, force: bool, no_migration: bool, light: bool = 
         download_url = DATASET_URL
 
     # Téléchargement du dataset
-    download_file(download_url, archive_path)
+    downlad_file(download_url, archive_path)
     
     # Extraction de l'archive
     click.echo("Extracting archive...")
